@@ -1,7 +1,14 @@
 const Rx = require('rxjs');
 const { readFile, watch, exists } = require('fs');
 const { join } = require('path');
-const { map, mergeMap, filter } = require('rxjs/operators');
+const {
+  map,
+  mergeMap,
+  filter,
+  catchError,
+  empty,
+  retry,
+} = require('rxjs/operators');
 
 const watchDir = directory => {
   console.log(`Wating for changes at ${directory}`);
@@ -17,8 +24,15 @@ const watchDir = directory => {
 };
 
 watchDir(join(__dirname, 'temp'))
-  .pipe(mergeMap(e => Rx.bindNodeCallback(readFile)(e.filename)))
-  .pipe(map(JSON.parse))
+  .pipe(
+    mergeMap(e => Rx.bindNodeCallback(readFile)(e.filename)),
+    retry(error => Rx.of('[]')),
+  )
+
+  .pipe(
+    map(JSON.parse),
+    retry(error => Rx.of([])),
+  )
   .pipe(mergeMap(e => Rx.from(e)))
 
   .subscribe(
@@ -29,5 +43,6 @@ watchDir(join(__dirname, 'temp'))
         Idade: ${result.age}
     `);
     },
-    error => console.error('errouuuu', error.message),
+    error => console.error(`errror`, error),
+    end => console.log('ACABAOU', end),
   );
