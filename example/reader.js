@@ -1,14 +1,7 @@
 const Rx = require('rxjs');
 const { readFile, watch, exists } = require('fs');
 const { join } = require('path');
-const {
-  map,
-  mergeMap,
-  filter,
-  catchError,
-  empty,
-  retry,
-} = require('rxjs/operators');
+const { map, mergeMap, retry } = require('rxjs/operators');
 
 const watchDir = directory => {
   console.log(`Wating for changes at ${directory}`);
