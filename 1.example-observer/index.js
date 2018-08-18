@@ -7,19 +7,6 @@ class NotImplementedException extends Error {
     }
 }
 
-class ISubject {
-
-    subscribe(observer) {
-        throw new NotImplementedException()
-    }
-    unsubscribe(observer) {
-        throw new NotImplementedException()
-    }
-    notify() {
-        throw new NotImplementedException()
-    }
-}
-
 class IObserver {
     update() {
         throw new NotImplementedException()
@@ -38,8 +25,18 @@ class Customer extends IObserver {
 
 }
 
+class ISubject {
+    subscribe(observer) {
+        throw new NotImplementedException()
+    }
+    unsubscribe(observer) {
+        throw new NotImplementedException()
+    }
+    notify() {
+        throw new NotImplementedException()
+    }
+}
 class OnlineStore extends ISubject {
-
     constructor() {
         super()
         this.observers = []
@@ -54,7 +51,6 @@ class OnlineStore extends ISubject {
             count: 0,
         }, inventory)
     }
-
 
     notify(newValue, oldValue) {
         this.observers.forEach(observer =>
