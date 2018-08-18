@@ -1,3 +1,6 @@
+/**@author erickwendel */
+
+
 class NotImplementedException extends Error {
     constructor(message) {
         this.message = message || "Error, this method has to be implemented"
@@ -17,23 +20,25 @@ class ISubject {
     }
 }
 
+class IObserver {
+    update() {
+        throw new NotImplementedException()
+    }
+}
 
-
-class Cliente {
+class Customer extends IObserver {
     constructor(name) {
+        super()
         this.observerName = name
-        // this.update = this._update
     }
 
     update(newValue, oldValue) {
-
-        console.log(`${this.observerName}, the inventary ${oldValue} was changed to ${newValue}`)
+        console.log(`${this.observerName}, the inventary with ${oldValue} products was changed to ${newValue}`)
     }
 
 }
 
-
-class LojaOnline extends ISubject {
+class OnlineStore extends ISubject {
 
     constructor() {
         super()
@@ -51,9 +56,6 @@ class LojaOnline extends ISubject {
     }
 
 
-    addProduct(product) {
-
-    }
     notify(newValue, oldValue) {
         this.observers.forEach(observer =>
             observer.update(newValue, oldValue)
@@ -71,9 +73,10 @@ class LojaOnline extends ISubject {
     }
 
     next(value) {
-        this._item.count = value;
+        this._item.count += value;
     }
 }
+
 // behavioral pattern
 /**
  * We can say that observer is 
@@ -87,24 +90,28 @@ class LojaOnline extends ISubject {
   Whenever the subject would have any addition in its inventory, 
   the observers (customers/users) who have subscribed to store notifications
    would be notified through email
+   reference:  http://reactivex.io/rxjs/class/es6/MiscJSDoc.js~ObserverDoc.html
+
  */
 (async function main() {
-    const subject = new LojaOnline()
+    const subject = new OnlineStore()
 
-    const erick = new Cliente("Erick")
+    const erick = new Customer("Erick")
     subject.subscribe(erick)
 
-    const camilla = new Cliente("Camilla")
+    const camilla = new Customer("Camilla")
     subject.subscribe(camilla)
 
-    subject.next('sabao');
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    subject.next(1);
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
-    // Observer1 unsubscribes 
+    console.log()
     subject.unsubscribe(erick)
+    console.log()
 
-    // Observer3 subscribes to notifications.
-    subject.subscribe(new Cliente("Amanda"))
-    subject.next('queijo');
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    subject.subscribe(new Customer("Amanda"))
+    subject.next(3);
 
 })()
