@@ -1,3 +1,3 @@
-example/temp/*
+2.example-rxjs/temp/*.json
 node_modules/
 package-lock.json
